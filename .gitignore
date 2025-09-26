@@ -40,7 +40,5 @@ Thumbs.db
 
 # Project specific
 Lib/
-Scripts/
 Include/
-results/genetic_syndrome_classification_report_old.pdf
-results/distribution_syndromes_old.png
+results/*_old*
