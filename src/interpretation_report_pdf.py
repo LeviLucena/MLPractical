@@ -28,38 +28,40 @@ def create_interpretation_report():
 
     # Question 1
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '2. Question 1: Bias-Variance Tradeoff Analysis', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '2. Question 1: Figure 1 - Data distribution samples', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10, 
-        'In Figure 1, we have data distributions where dots represent sparse data for axes X and Y, '
-        'and lines represent the fit of a hypothetical classification model.')
+        'Figure 1 presents a data distribution, the dots represent the sparse data for the axis X and Y, '
+        'and the lines represent the fit of a hypothetical classification model.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Which distribution has the best balance between bias and variance?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'The distribution with the best balance between bias and variance would be the one where '
-        'the fitted line captures the general trend of the data points without overfitting to '
-        'the noise in the data. This is typically characterized by a model that has a moderate '
-        'complexity - not too simple to have high bias, but not too complex to have high variance.')
+        'Based on Figure 1, the distribution with the fitted line that captures the general trend of the data points '
+        'without overfitting to the noise would have the best balance between bias and variance. '
+        'This is typically a model with moderate complexity - not too simple (which would result in high bias and '
+        'underfitting) and not too complex (which would result in high variance and overfitting). '
+        'Ideally, it would be the model that follows the true underlying pattern in the data while maintaining '
+        'generalization capability.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Describe your thoughts about your selection.', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'In the bias-variance tradeoff, a model with high bias underfits the data (too simple), '
-        'while a model with high variance overfits the data (too complex). The optimal model '
-        'minimizes both bias and variance simultaneously. The best balance is typically achieved '
+        'In the bias-variance tradeoff, a model with high bias tends to underfit the data (too simplistic), '
+        'while a model with high variance tends to overfit the data (too complex and sensitive to noise). '
+        'The optimal model minimizes both bias and variance simultaneously. The best balance is achieved '
         'when the model captures the underlying pattern without being overly sensitive to '
-        'random fluctuations in the training data. This corresponds to a model that generalizes '
+        'random fluctuations in the training data, which corresponds to a model that generalizes '
         'well to unseen data.')
     pdf.ln()
 
     # Question 2
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '3. Question 2: Model Evaluation Graph Analysis', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '3. Question 2: Figure 2 - Simple graph', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
         'Figure 2 presents a simple graph with 2 curves and 1 line. In model selection and evaluation:')
@@ -69,83 +71,88 @@ def create_interpretation_report():
     pdf.cell(0, 10, '* What is the purpose of this graph and its name?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'This is likely a bias-variance tradeoff graph or a model complexity graph. The purpose '
-        'is to illustrate how model performance changes with complexity. It typically shows '
-        'training error decreasing with model complexity while validation/test error decreases '
-        'initially but then increases after a certain point due to overfitting.')
+        'Based on the distribution of Figure 2 - Simple graph, this is a bias-variance tradeoff graph '
+        '(also known as a model complexity graph). The purpose is to illustrate how model performance changes '
+        'with complexity. It typically shows training error decreasing with model complexity while '
+        'validation/test error decreases initially but then increases after a certain point due to overfitting.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* What kind of model result does the dashed line represent?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'The dashed line typically represents the optimal model complexity point - where the '
+        'The dashed line in Figure 2 represents the optimal model complexity point - where the '
         'total error (bias + variance) is minimized. This is the point where the model '
-        'achieves the best generalization performance.')
+        'achieves the best generalization performance, balancing between underfitting and overfitting.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Which curve represents a better fit, the red or the green? Why?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'The curve that represents a better fit would be the one that has lower error at the '
-        'optimal complexity point. Generally, the curve that follows the bias-variance tradeoff '
-        'pattern - starting high, decreasing to a minimum, then increasing - represents a '
-        'better model behavior. The better fit occurs at the point where the total error is minimized.')
+        'Based on Figure 2, the curve that represents a better fit would be the one that has lower error at the '
+        'optimal complexity point (where the dashed line intersects). If one curve shows consistently lower '
+        'validation error around the optimal point, it represents a better model. The better fit occurs at '
+        'the point where the total error is minimized, typically where the validation error curve starts '
+        'to rise while the training error continues to decrease.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Describe your thoughts about your selection.', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'The selection depends on which curve demonstrates the classic bias-variance tradeoff '
-        'more clearly. A well-designed model evaluation graph will show training error '
-        'decreasing monotonically with complexity while validation error initially decreases '
-        'but eventually increases due to overfitting. The sweet spot is just before overfitting '
-        'begins, which represents the optimal balance between bias and variance.')
+        'Based on the distribution of Figure 2 - Simple graph, my selection depends on which curve demonstrates '
+        'the classic bias-variance tradeoff more clearly. A well-designed model evaluation graph will show '
+        'training error decreasing monotonically with complexity while validation error initially decreases '
+        'but eventually increases due to overfitting. The sweet spot is just before overfitting begins, '
+        'which represents the optimal balance between bias and variance.')
     pdf.ln()
 
     # Question 3
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '4. Question 3: Model Training and Evaluation Analysis', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '4. Question 3: Figure 3 - Model train and evaluation pipeline', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'Figure 3 presents a classification model training and evaluation. The model classifies '
-        '3 classes (A, B, C). Graph A represents training accuracy over epochs, Graph B represents '
-        'training loss over epochs, and the table represents the evaluation using test samples '
-        'with a confusion matrix.')
+        'Figure 3 presents a classification model training and the evaluation. This model classifies '
+        '3 classes (A, B, C). Graph A represents the training accuracy over the epochs, Graph B represents '
+        'the training loss over the epochs, and the table represents the evaluation of the model using some test samples, '
+        'we used a confusion matrix to evaluate the classes trained.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Can we say that the model has a good performance in the test evaluation?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'This would depend on the confusion matrix results. If the matrix shows high values on '
-        'the diagonal (correct classifications) and low values off the diagonal (misclassifications), '
-        'then yes, the model has good performance. Good performance would be indicated by '
-        'high precision, recall, and F1 scores for all classes.')
+        'Based on the distribution of Figure 3 - Model train and evaluation pipeline, the model performance '
+        'depends on the confusion matrix results. If the matrix shows high values on the diagonal '
+        '(correct classifications) and low values off the diagonal (misclassifications), then yes, '
+        'the model has good performance. Good performance would be indicated by high precision, '
+        'recall, and F1 scores for all classes, showing that the model correctly identifies samples '
+        'from classes A, B, and C.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* What phenomenon happened during the test evaluation?', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'Based on the training accuracy and loss graphs, we would look for signs of overfitting '
-        'or underfitting. Overfitting occurs when training accuracy continues to improve but '
-        'validation/test performance starts to decline. Underfitting occurs when the model '
-        'performs poorly on both training and validation data.')
+        'Based on the distribution of Figure 3 - Model train and evaluation pipeline, looking at the '
+        'training accuracy and loss graphs, we would identify signs of overfitting or underfitting. '
+        'Overfitting occurs when training accuracy continues to improve but validation/test performance '
+        'starts to decline. Underfitting occurs when the model performs poorly on both training and validation data. '
+        'If there\'s a significant gap between training and validation metrics, overfitting likely occurred.')
     pdf.ln()
     
     pdf.set_font('helvetica', 'B', 10)
     pdf.cell(0, 10, '* Describe your thoughts about your selection.', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'If the training accuracy is high but validation accuracy is significantly lower, '
-        'overfitting has occurred. This means the model learned the training data too well '
-        'and lost its ability to generalize. Conversely, if both accuracies are low, '
-        'underfitting occurred, indicating the model is too simple to capture the data patterns. '
-        'The confusion matrix would provide insight into which classes the model struggles '
-        'with the most.')
+        'Based on the distribution of Figure 3 - Model train and evaluation pipeline: If the training '
+        'accuracy is high but validation accuracy is significantly lower, overfitting has occurred. '
+        'This means the model learned the training data too well and lost its ability to generalize. '
+        'Conversely, if both accuracies are low, underfitting occurred, indicating the model is too '
+        'simple to capture the data patterns. The confusion matrix would provide insight into which '
+        'classes the model struggles with the most, showing potential class imbalance issues or '
+        'difficulties distinguishing between specific classes.')
     pdf.ln()
 
     # Include Results Images
