@@ -47,7 +47,7 @@ def create_report():
         '5. Cross-Validation: 10-fold cross-validation was used to evaluate '
         'model performance and determine the optimal k value.\n\n'
         '6. Evaluation Metrics: AUC (Area Under the ROC Curve), '
-        'F1-Score, and Accuracy metrics were calculated to compare the performance '
+        'F1-Score, Accuracy, and Top-k Accuracy metrics were calculated to compare the performance '
         'of the different configurations.')
     pdf.ln()
 
@@ -66,7 +66,12 @@ def create_report():
         '3.2. Classification:\n'
         'Euclidean Distance - Best k: 15, AUC: 0.9504, F1: 0.7547, Accuracy: 0.7634\n'
         'Cosine Distance - Best k: 15, AUC: 0.9630, F1: 0.7874, Accuracy: 0.7948\n\n'
-        '3.3. Conclusion:\n'
+        '3.3. Top-k Accuracy:\n'
+        'Euclidean Distance (k=15):\n'
+        '  Top-1 Accuracy: 0.7634, Top-3 Accuracy: 0.9247, Top-5 Accuracy: 0.9659\n'
+        'Cosine Distance (k=15):\n'
+        '  Top-1 Accuracy: 0.7948, Top-3 Accuracy: 0.9418, Top-5 Accuracy: 0.9749\n\n'
+        '3.4. Conclusion:\n'
         'The Cosine distance metric performed better with an AUC of 0.9630, '
         'indicating that the angular similarity between embedding vectors is more '
         'appropriate for this task than Euclidean distance.')

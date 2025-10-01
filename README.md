@@ -7,6 +7,7 @@ This project implements a machine learning solution to classify genetic syndrome
 - `src/`: Source code for the project
   - `ml_project.py`: Main script for data processing, analysis and classification
   - `create_report.py`: Script to generate the final PDF report
+  - `interpretation_report_pdf.py`: Script to generate interpretation
 - `results/`: Output files including plots and reports
 - `mini_gm_public_v0.1.p`: Input dataset file (provided)
 
@@ -34,6 +35,10 @@ This project implements a machine learning solution to classify genetic syndrome
 2. Generate the PDF report:
    ```
    python src/create_report.py
+   ```
+3. Execute Script to generate interpretation
+   ```
+   src/interpretation_report_pdf.py
    ```
 
 ## Results
@@ -75,6 +80,7 @@ The project output includes:
 - `metric_comparison.png`: Performance comparison of metrics
 - `roc_curves_comparison.png`: ROC curves for both metrics
 - `genetic_syndrome_classification_report.pdf`: Comprehensive analysis report
+- `interpretation_analysis_report.pdf`: Interpretation analysis report
 
 ## Analysis
 

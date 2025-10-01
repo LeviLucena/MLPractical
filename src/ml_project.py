@@ -118,6 +118,15 @@ def visualize_embeddings_tsne(embeddings, labels, sample_size=1000):
     
     print(f"\nt-SNE visualization completed with {len(sample_embeddings)} samples")
 
+def calculate_top_k_accuracy(y_true, y_pred_proba, k=5):
+    """
+    Calculates Top-k Accuracy
+    """
+    top_k_pred = np.argsort(y_pred_proba, axis=1)[:, -k:]
+    matches = [1 if y_true[i] in top_k_pred[i] else 0 for i in range(len(y_true))]
+    top_k_accuracy = sum(matches) / len(matches)
+    return top_k_accuracy
+
 def calculate_metrics(y_true, y_pred, y_pred_proba, classes):
     """
     Calculates evaluation metrics
@@ -136,7 +145,7 @@ def calculate_metrics(y_true, y_pred, y_pred_proba, classes):
     
     return auc_score, f1, accuracy
 
-def knn_classification(embeddings, labels, distance_metric='euclidean'):
+def knn_classification(embeddings, labels, distance_metric='euclidean', top_k_values=[1, 3, 5]):
     """
     Implements KNN classification with different distance metrics
     """
@@ -152,6 +161,9 @@ def knn_classification(embeddings, labels, distance_metric='euclidean'):
     cv_scores_f1 = []
     cv_scores_accuracy = []
     
+    # Store Top-k accuracy for different values of k
+    cv_top_k_scores = {k: [] for k in top_k_values}
+    
     for k in k_values:
         knn = KNeighborsClassifier(n_neighbors=k, metric=distance_metric)
         
@@ -159,6 +171,9 @@ def knn_classification(embeddings, labels, distance_metric='euclidean'):
         fold_auc = []
         fold_f1 = []
         fold_acc = []
+        
+        # For Top-k accuracy, store values for each fold
+        fold_top_k = {top_k: [] for top_k in top_k_values}
         
         for train_idx, val_idx in skf.split(embeddings, labels):
             X_train, X_val = embeddings[train_idx], embeddings[val_idx]
@@ -176,11 +191,20 @@ def knn_classification(embeddings, labels, distance_metric='euclidean'):
             fold_auc.append(auc_score)
             fold_f1.append(f1)
             fold_acc.append(acc)
+            
+            # Calculate Top-k accuracy for each k value
+            for top_k in top_k_values:
+                top_k_acc = calculate_top_k_accuracy(y_val, y_pred_proba, k=top_k)
+                fold_top_k[top_k].append(top_k_acc)
         
         # Average scores across folds
         cv_scores_auc.append(np.mean(fold_auc))
         cv_scores_f1.append(np.mean(fold_f1))
         cv_scores_accuracy.append(np.mean(fold_acc))
+        
+        # Average Top-k accuracy across folds
+        for top_k in top_k_values:
+            cv_top_k_scores[top_k].append(np.mean(fold_top_k[top_k]))
     
     # Find optimal k
     optimal_k_idx = np.argmax(cv_scores_auc)
@@ -191,10 +215,12 @@ def knn_classification(embeddings, labels, distance_metric='euclidean'):
     results['cv_scores_auc'] = cv_scores_auc
     results['cv_scores_f1'] = cv_scores_f1
     results['cv_scores_accuracy'] = cv_scores_accuracy
+    results['cv_top_k_scores'] = cv_top_k_scores
     results['optimal_k'] = optimal_k
     results['optimal_auc'] = cv_scores_auc[optimal_k_idx]
     results['optimal_f1'] = cv_scores_f1[optimal_k_idx]
     results['optimal_accuracy'] = cv_scores_accuracy[optimal_k_idx]
+    results['top_k_values'] = top_k_values
     
     print(f"Best k: {optimal_k} with AUC: {results['optimal_auc']:.4f}")
     
@@ -204,7 +230,14 @@ def plot_metrics_comparison(euclidean_results, cosine_results):
     """
     Plots metric comparison between Euclidean and Cosine distances
     """
-    fig, axes = plt.subplots(3, 1, figsize=(12, 15))
+    top_k_values = euclidean_results['top_k_values']
+    
+    # Create enough subplots for all metrics (AUC, F1, Accuracy, and Top-k values)
+    total_plots = 3 + len(top_k_values)  # AUC, F1, Accuracy + Top-k plots
+    fig, axes = plt.subplots(total_plots, 1, figsize=(12, 5 * total_plots))
+    
+    if total_plots == 1:
+        axes = [axes]
     
     k_values = euclidean_results['k_values']
     
@@ -234,6 +267,17 @@ def plot_metrics_comparison(euclidean_results, cosine_results):
     axes[2].set_ylabel('Accuracy')
     axes[2].legend()
     axes[2].grid(True)
+    
+    # Top-k Accuracy plots
+    for idx, top_k in enumerate(top_k_values):
+        ax_idx = 3 + idx
+        axes[ax_idx].plot(k_values, euclidean_results['cv_top_k_scores'][top_k], label='Euclidean', marker='o')
+        axes[ax_idx].plot(k_values, cosine_results['cv_top_k_scores'][top_k], label='Cosine', marker='s')
+        axes[ax_idx].set_title(f'Top-{top_k} Accuracy by K Value')
+        axes[ax_idx].set_xlabel('K Value')
+        axes[ax_idx].set_ylabel(f'Top-{top_k} Accuracy')
+        axes[ax_idx].legend()
+        axes[ax_idx].grid(True)
     
     plt.tight_layout()
     plt.savefig('results/metric_comparison.png')
@@ -344,6 +388,74 @@ def plot_roc_curves(embeddings, labels, euclidean_k, cosine_k):
     print(f"\nAverage AUC - Euclidean: {mean_auc_euclidean:.4f}")
     print(f"Average AUC - Cosine: {mean_auc_cosine:.4f}")
 
+def generate_performance_tables(euclidean_results, cosine_results):
+    """
+    Generates performance summary tables including Top-k Accuracy metrics
+    """
+    # Create a DataFrame to store all metrics for easy display
+    import pandas as pd
+    
+    # Get the optimal k results
+    optimal_euc_k = euclidean_results['optimal_k']
+    optimal_cos_k = cosine_results['optimal_k']
+    
+    # Create summary table
+    summary_data = {
+        'Metric': ['AUC', 'F1-Score', 'Accuracy'] + [f'Top-{k}' for k in euclidean_results['top_k_values']],
+        'Euclidean (k=' + str(optimal_euc_k) + ')': [
+            euclidean_results['optimal_auc'],
+            euclidean_results['optimal_f1'],
+            euclidean_results['optimal_accuracy']
+        ] + [
+            euclidean_results['cv_top_k_scores'][k][optimal_euc_k-1] for k in euclidean_results['top_k_values']
+        ],
+        'Cosine (k=' + str(optimal_cos_k) + ')': [
+            cosine_results['optimal_auc'],
+            cosine_results['optimal_f1'],
+            cosine_results['optimal_accuracy']
+        ] + [
+            cosine_results['cv_top_k_scores'][k][optimal_cos_k-1] for k in cosine_results['top_k_values']
+        ]
+    }
+    
+    df_summary = pd.DataFrame(summary_data)
+    
+    # Save to a CSV file as well
+    df_summary.to_csv('results/performance_summary.csv', index=False, float_format='%.4f')
+    
+    # Print the table to console
+    print("\nPERFORMANCE SUMMARY TABLE:")
+    print(df_summary.round(4))
+    
+    # Also create detailed table for each k value
+    detailed_data = []
+    all_k_values = euclidean_results['k_values']
+    
+    for k in all_k_values:
+        row = {
+            'k': k,
+            'Euclidean_AUC': euclidean_results['cv_scores_auc'][k-1],
+            'Euclidean_F1': euclidean_results['cv_scores_f1'][k-1],
+            'Euclidean_Accuracy': euclidean_results['cv_scores_accuracy'][k-1],
+            'Cosine_AUC': cosine_results['cv_scores_auc'][k-1],
+            'Cosine_F1': cosine_results['cv_scores_f1'][k-1],
+            'Cosine_Accuracy': cosine_results['cv_scores_accuracy'][k-1]
+        }
+        
+        # Add Top-k accuracy values
+        for top_k in euclidean_results['top_k_values']:
+            row[f'Euclidean_Top{top_k}'] = euclidean_results['cv_top_k_scores'][top_k][k-1]
+            row[f'Cosine_Top{top_k}'] = cosine_results['cv_top_k_scores'][top_k][k-1]
+        
+        detailed_data.append(row)
+    
+    df_detailed = pd.DataFrame(detailed_data)
+    df_detailed.to_csv('results/performance_detailed.csv', index=False, float_format='%.4f')
+    
+    print("\nDETAILED PERFORMANCE TABLE (saved to results/performance_detailed.csv):")
+    # Display first few rows as an example
+    print(df_detailed.head().round(4))
+
 def main():
     """
     Main function that executes the entire pipeline
@@ -373,11 +485,11 @@ def main():
     
     # 5. KNN Classification with Euclidean distance
     print("5. Performing KNN classification with Euclidean distance...")
-    euclidean_results = knn_classification(embeddings, labels, distance_metric='euclidean')
+    euclidean_results = knn_classification(embeddings, labels, distance_metric='euclidean', top_k_values=[1, 3, 5])
     
     # 6. KNN Classification with Cosine distance
     print("6. Performing KNN classification with Cosine distance...")
-    cosine_results = knn_classification(embeddings, labels, distance_metric='cosine')
+    cosine_results = knn_classification(embeddings, labels, distance_metric='cosine', top_k_values=[1, 3, 5])
     
     # 7. Metric comparison
     print("7. Comparing metrics...")
@@ -387,12 +499,28 @@ def main():
     print("8. Generating ROC curves...")
     plot_roc_curves(embeddings, labels, euclidean_results['optimal_k'], cosine_results['optimal_k'])
     
-    # 9. Summary of results
+    # 9. Generate performance tables
+    print("9. Generating performance summary tables...")
+    generate_performance_tables(euclidean_results, cosine_results)
+    
+    # 10. Summary of results
     print("\n" + "="*50)
     print("RESULTS SUMMARY")
     print("="*50)
     print(f"Euclidean Distance - Best k: {euclidean_results['optimal_k']}, AUC: {euclidean_results['optimal_auc']:.4f}, F1: {euclidean_results['optimal_f1']:.4f}, Accuracy: {euclidean_results['optimal_accuracy']:.4f}")
     print(f"Cosine Distance - Best k: {cosine_results['optimal_k']}, AUC: {cosine_results['optimal_auc']:.4f}, F1: {cosine_results['optimal_f1']:.4f}, Accuracy: {cosine_results['optimal_accuracy']:.4f}")
+    
+    # Print Top-k Accuracy for the optimal k values
+    print("\nTop-k Accuracy Results (using optimal k values):")
+    print(f"Euclidean Distance (k={euclidean_results['optimal_k']}):")
+    for top_k in euclidean_results['top_k_values']:
+        top_k_acc = euclidean_results['cv_top_k_scores'][top_k][euclidean_results['optimal_k']-1]
+        print(f"  Top-{top_k} Accuracy: {top_k_acc:.4f}")
+    
+    print(f"Cosine Distance (k={cosine_results['optimal_k']}):")
+    for top_k in cosine_results['top_k_values']:
+        top_k_acc = cosine_results['cv_top_k_scores'][top_k][cosine_results['optimal_k']-1]
+        print(f"  Top-{top_k} Accuracy: {top_k_acc:.4f}")
     
     if euclidean_results['optimal_auc'] > cosine_results['optimal_auc']:
         print(f"\nThe Euclidean distance metric performed better with AUC of {euclidean_results['optimal_auc']:.4f}")
