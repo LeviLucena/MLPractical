@@ -1,10 +1,14 @@
+"""
+Correção do relatório de interpretação para alinhar com as figuras descritas
+Esta versão corrige o relatório para refletir as figuras teóricas especificadas
+"""
 from fpdf import FPDF
 import os
 
-class InterpretationReport(FPDF):
+class CorrectInterpretationReport(FPDF):
     def header(self):
         self.set_font('helvetica', 'B', 15)
-        self.cell(0, 10, 'Interpretation Report: Model Analysis Questions', 0, new_x='LMARGIN', new_y='NEXT', align='C')
+        self.cell(0, 10, 'Corrected Interpretation Report: Model Analysis Questions', 0, new_x='LMARGIN', new_y='NEXT', align='C')
         self.ln(5)
 
     def footer(self):
@@ -12,9 +16,9 @@ class InterpretationReport(FPDF):
         self.set_font('helvetica', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, new_x='RIGHT', new_y='TOP', align='C')
 
-def create_interpretation_report():
+def create_correct_interpretation_report():
     # Create PDF
-    pdf = InterpretationReport()
+    pdf = CorrectInterpretationReport()
     pdf.add_page()
     
     # Introduction
@@ -22,13 +26,27 @@ def create_interpretation_report():
     pdf.cell(0, 10, '1. Introduction', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10, 
-        'This report addresses the interpretation questions related to model analysis. '
-        'Each question is analyzed with detailed explanations based on machine learning principles.')
+        'This report addresses the interpretation questions related to model analysis with corrected figure associations. '
+        'The theoretical figures described in the questions do not exactly match the actual generated figures from our '
+        'genetic syndrome classification project. This report clarifies the mapping between theoretical concepts and '
+        'actual results.')
     pdf.ln()
 
     # Question 1
     pdf.set_font('helvetica', 'B', 12)
     pdf.cell(0, 10, '2. Question 1: Figure 1 - Data distribution samples', 0, new_x='LMARGIN', new_y='NEXT')
+    
+    # Add Figure 1 right after the title
+    try:
+        pdf.ln(5)  # Add some space after the title
+        pdf.image('results/tsne_visualization.png', x=10, y=None, w=170)
+        pdf.ln(85)  # Add space after image
+    except:
+        pdf.set_font('helvetica', '', 10)
+        pdf.cell(0, 10, 'Figure 1 image could not be loaded', 0, new_x='LMARGIN', new_y='NEXT')
+        pdf.ln()
+        pdf.set_font('helvetica', 'B', 12)
+    
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10, 
         'Figure 1 presents a data distribution, the dots represent the sparse data for the axis X and Y, '
@@ -62,6 +80,18 @@ def create_interpretation_report():
     # Question 2
     pdf.set_font('helvetica', 'B', 12)
     pdf.cell(0, 10, '3. Question 2: Figure 2 - Simple graph', 0, new_x='LMARGIN', new_y='NEXT')
+    
+    # Add Figure 2 right after the title
+    try:
+        pdf.ln(5)  # Add some space after the title
+        pdf.image('results/roc_curves_comparison.png', x=10, y=None, w=170)
+        pdf.ln(85)  # Add space after image
+    except:
+        pdf.set_font('helvetica', '', 10)
+        pdf.cell(0, 10, 'Figure 2 image could not be loaded', 0, new_x='LMARGIN', new_y='NEXT')
+        pdf.ln()
+        pdf.set_font('helvetica', 'B', 12)
+    
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
         'Figure 2 presents a simple graph with 2 curves and 1 line. In model selection and evaluation:')
@@ -111,6 +141,18 @@ def create_interpretation_report():
     # Question 3
     pdf.set_font('helvetica', 'B', 12)
     pdf.cell(0, 10, '4. Question 3: Figure 3 - Model train and evaluation pipeline', 0, new_x='LMARGIN', new_y='NEXT')
+    
+    # Add Figure 3 right after the title
+    try:
+        pdf.ln(5)  # Add some space after the title
+        pdf.image('results/metric_comparison.png', x=10, y=None, w=170)
+        pdf.ln(85)  # Add space after image
+    except:
+        pdf.set_font('helvetica', '', 10)
+        pdf.cell(0, 10, 'Figure 3 image could not be loaded', 0, new_x='LMARGIN', new_y='NEXT')
+        pdf.ln()
+        pdf.set_font('helvetica', 'B', 12)
+    
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
         'Figure 3 presents a classification model training and the evaluation. This model classifies '
@@ -155,80 +197,94 @@ def create_interpretation_report():
         'difficulties distinguishing between specific classes.')
     pdf.ln()
 
-    # Include Results Images
+    # Note about figure correspondence
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '5. Results from Our Genetic Syndrome Classification', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '5. Mapping of Theoretical Figures to Actual Results', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'The following images show the results from our genetic syndrome classification project.')
+        'Note: The theoretical figures described in the questions do not exactly correspond to our actual project '
+        'results. For this report, we are mapping the concepts as follows:')
+    pdf.ln()
+    
+    pdf.set_font('helvetica', 'B', 10)
+    pdf.cell(0, 10, 'Theoretical Figure 1 (Data distribution) -> Actual Figure: t-SNE Visualization', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.set_font('helvetica', '', 10)
+    pdf.multi_cell(0, 10,
+        'The t-SNE visualization shows the distribution of genetic syndrome embeddings in a 2D space, '
+        'which can conceptually represent "dots for sparse data" as described in the theoretical figure.')
+    pdf.ln()
+    
+    pdf.set_font('helvetica', 'B', 10)
+    pdf.cell(0, 10, 'Theoretical Figure 2 (Model selection graph) -> Actual Figure: ROC Curves Comparison', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.set_font('helvetica', '', 10)
+    pdf.multi_cell(0, 10,
+        'While ROC curves are different from bias-variance tradeoff curves, both represent model selection and evaluation '
+        '- comparing different models\' performance, which aligns with the conceptual purpose.')
+    pdf.ln()
+    
+    pdf.set_font('helvetica', 'B', 10)
+    pdf.cell(0, 10, 'Theoretical Figure 3 (Training pipeline) -> Actual Figure: Metrics Comparison', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.set_font('helvetica', '', 10)
+    pdf.multi_cell(0, 10,
+        'The metrics comparison shows model performance across different k values, representing the '
+        'evaluation phase of a model training pipeline, which aligns conceptually with the theoretical figure.')
     pdf.ln()
 
-    # Add images to the report
+    # Include Remaining Results Images
+    pdf.set_font('helvetica', 'B', 12)
+    pdf.cell(0, 10, '6. Additional Results from Our Genetic Syndrome Classification', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.set_font('helvetica', '', 10)
+    pdf.multi_cell(0, 10,
+        'The following additional images show the actual results from our genetic syndrome classification project.')
+    pdf.ln()
+
+    # Add remaining images
     try:
-        # Add t-SNE visualization
-        pdf.cell(0, 10, 't-SNE Visualization of Embeddings:', 0, new_x='LMARGIN', new_y='NEXT')
-        pdf.image('results/tsne_visualization.png', x=10, y=None, w=170)
-        pdf.ln(85)  # Add space after image
-        
         # Add distribution plot
         pdf.cell(0, 10, 'Sample Distribution by Syndrome:', 0, new_x='LMARGIN', new_y='NEXT')
         pdf.image('results/distribution_syndromes.png', x=10, y=None, w=170)
         pdf.ln(85)  # Add space after image
         
-        # Add metric comparison
-        pdf.cell(0, 10, 'Performance Metrics Comparison:', 0, new_x='LMARGIN', new_y='NEXT')
-        pdf.image('results/metric_comparison.png', x=10, y=None, w=170)
-        pdf.ln(85)  # Add space after image
-        
-        # Add ROC curves
-        pdf.cell(0, 10, 'ROC Curves Comparison:', 0, new_x='LMARGIN', new_y='NEXT')
-        pdf.image('results/roc_curves_comparison.png', x=10, y=None, w=170)
-        pdf.ln(85)  # Add space after image
-        
     except:
         pdf.set_font('helvetica', '', 10)
-        pdf.multi_cell(0, 10, 'Note: Images could not be loaded. Please ensure the results directory contains the following files:')
-        pdf.cell(0, 10, '- results/tsne_visualization.png', 0, new_x='LMARGIN', new_y='NEXT')
+        pdf.multi_cell(0, 10, 'Note: Additional figure representations could not be loaded. The following files are required for the interpretation report:')
         pdf.cell(0, 10, '- results/distribution_syndromes.png', 0, new_x='LMARGIN', new_y='NEXT')
-        pdf.cell(0, 10, '- results/metric_comparison.png', 0, new_x='LMARGIN', new_y='NEXT')
-        pdf.cell(0, 10, '- results/roc_curves_comparison.png', 0, new_x='LMARGIN', new_y='NEXT')
         pdf.ln()
 
     # Add our project results summary
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '6. Project Results Summary', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '7. Project Results Summary', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'Our genetic syndrome classification project using K-Nearest Neighbors achieved the following results:\\n\\n'
-        '* Dataset: 1,116 samples across 10 different genetic syndromes\\n'
-        '* Best Model: Cosine distance metric with k=15 achieved AUC of 0.9630\\n'
-        '* Performance Comparison:\\n'
-        '  - Euclidean Distance (k=15): AUC: 0.9504, F1: 0.7547, Accuracy: 0.7634\\n'
-        '  - Cosine Distance (k=15): AUC: 0.9630, F1: 0.7874, Accuracy: 0.7948\\n'
-        '* Top-k Accuracy Results:\\n'
-        '  - Euclidean Distance: Top-1: 0.7634, Top-3: 0.9247, Top-5: 0.9659\\n'
-        '  - Cosine Distance: Top-1: 0.7948, Top-3: 0.9418, Top-5: 0.9749\\n\\n'
+        'Our genetic syndrome classification project using K-Nearest Neighbors achieved the following results:\\\\n\\\\n'
+        '* Dataset: 1,116 samples across 10 different genetic syndromes\\\\n'
+        '* Best Model: Cosine distance metric with k=15 achieved AUC of 0.9630\\\\n'
+        '* Performance Comparison:\\\\n'
+        '  - Euclidean Distance (k=15): AUC: 0.9504, F1: 0.7547, Accuracy: 0.7634\\\\n'
+        '  - Cosine Distance (k=15): AUC: 0.9630, F1: 0.7874, Accuracy: 0.7948\\\\n'
+        '* Top-k Accuracy Results:\\\\n'
+        '  - Euclidean Distance: Top-1: 0.7634, Top-3: 0.9247, Top-5: 0.9659\\\\n'
+        '  - Cosine Distance: Top-1: 0.7948, Top-3: 0.9418, Top-5: 0.9749\\\\n\\\\n'
         'The superior performance of cosine distance suggests that directional similarity between '
         'embedding vectors is more relevant for genetic syndrome classification than absolute '
         'Euclidean distance.')
-    pdf.ln()
 
     # Conclusion
     pdf.set_font('helvetica', 'B', 12)
-    pdf.cell(0, 10, '7. Conclusion', 0, new_x='LMARGIN', new_y='NEXT')
+    pdf.cell(0, 10, '8. Conclusion', 0, new_x='LMARGIN', new_y='NEXT')
     pdf.set_font('helvetica', '', 10)
     pdf.multi_cell(0, 10,
-        'This interpretation report analyzed theoretical concepts of model evaluation and '
-        'bias-variance tradeoff, applying these principles to understand machine learning model '
-        'performance. The practical results from our genetic syndrome classification project '
-        'demonstrate effective application of these concepts, achieving high performance '
-        'with appropriate model selection and evaluation techniques.')
+        'This corrected interpretation report clarifies the mapping between theoretical concepts described in '
+        'the analysis questions and our actual experimental results. While the exact figures differ, the '
+        'underlying machine learning concepts of bias-variance tradeoff, model evaluation, and performance '
+        'assessment remain applicable. Our genetic syndrome classification project demonstrates these '
+        'principles in practice, achieving high performance with appropriate model selection techniques.')
 
     # Save PDF
     pdf.output('results/interpretation_analysis_report.pdf')
-    print("PDF interpretation report created successfully: results/interpretation_analysis_report.pdf")
+    print("Corrected PDF interpretation report created successfully: results/interpretation_analysis_report.pdf")
 
 if __name__ == "__main__":
     # Create results directory if it doesn't exist
     os.makedirs('results', exist_ok=True)
-    create_interpretation_report()
+    create_correct_interpretation_report()

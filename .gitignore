@@ -41,4 +41,6 @@ Thumbs.db
 # Project specific
 Lib/
 Include/
-results/*_old*
+Scripts/
+results/*.png
+results/*.pdf

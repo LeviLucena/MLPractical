@@ -38,7 +38,7 @@ This project implements a machine learning solution to classify genetic syndrome
    ```
 3. Execute Script to generate interpretation
    ```
-   src/interpretation_report_pdf.py
+   python src/interpretation_report_pdf.py
    ```
 
 ## Results
