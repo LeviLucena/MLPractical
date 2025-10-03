@@ -1,6 +1,7 @@
 # Genetic Syndrome Classification Project
 
 This project implements a machine learning solution to classify genetic syndromes using image embeddings. The embeddings are 320-dimensional vectors from a pre-trained classification model.
+<img width="1024" height="576" alt="Gemini_Generated_Image_ly34q2ly34q2ly341" src="https://github.com/user-attachments/assets/9ebb53dd-f916-46c1-92c9-64cdf1976ab2" />
 
 ## Project Structure
 
