@@ -1,6 +1,49 @@
+<p align="center">
+
+  <!-- Linguagem principal -->
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+  </a>
+
+  <!-- Data Science e ML -->
+  <a href="https://numpy.org/">
+    <img src="https://img.shields.io/badge/-NumPy-013243?style=flat-square&logo=numpy&logoColor=white" alt="NumPy" />
+  </a>
+  <a href="https://scikit-learn.org/">
+    <img src="https://img.shields.io/badge/-Scikit--Learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white" alt="Scikit-learn" />
+  </a>
+  <a href="https://pandas.pydata.org/">
+    <img src="https://img.shields.io/badge/-Pandas-150458?style=flat-square&logo=pandas&logoColor=white" alt="Pandas" />
+  </a>
+  <a href="https://www.scipy.org/">
+    <img src="https://img.shields.io/badge/-SciPy-8CAAE6?style=flat-square&logo=scipy&logoColor=white" alt="SciPy" />
+  </a>
+
+  <!-- Visualização -->
+  <a href="https://matplotlib.org/">
+    <img src="https://img.shields.io/badge/-Matplotlib-11557C?style=flat-square&logo=python&logoColor=white" alt="Matplotlib" />
+  </a>
+  <a href="https://seaborn.pydata.org/">
+    <img src="https://img.shields.io/badge/-Seaborn-3776AB?style=flat-square&logo=python&logoColor=white" alt="Seaborn" />
+  </a>
+
+  <!-- Geração de PDF -->
+  <a href="https://pypi.org/project/fpdf2/">
+    <img src="https://img.shields.io/badge/-FPDF2-005F6A?style=flat-square&logo=python&logoColor=white" alt="FPDF2" />
+  </a>
+
+  <!-- Status do projeto -->
+  <img src="https://img.shields.io/badge/status-completo-success?style=flat-square" alt="Status" />
+
+  <!-- Licença -->
+  <img src="https://img.shields.io/badge/license-License%20Not%20Specified-blue?style=flat-square" alt="License" />
+
+</p>
+
 # Genetic Syndrome Classification Project
 
 This project implements a machine learning solution to classify genetic syndromes using image embeddings. The embeddings are 320-dimensional vectors from a pre-trained classification model.
+<img width="1024" height="576" alt="Gemini_Generated_Image_ly34q2ly34q2ly341" src="https://github.com/user-attachments/assets/9ebb53dd-f916-46c1-92c9-64cdf1976ab2" />
 
 ## Project Structure
 

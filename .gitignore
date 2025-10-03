@@ -42,5 +42,3 @@ Thumbs.db
 Lib/
 Include/
 Scripts/
-results/*.png
-results/*.pdf
